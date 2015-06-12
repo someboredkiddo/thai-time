@@ -1,0 +1,12 @@
+[core]
+logging_conf_file: log.conf
+dir: ./dir
+
+[doh]
+download_url: http://nycopendata.socrata.com/api/views/xx67-kt59/rows.csv?accessType=DOWNLOAD
+
+[db]
+host:
+user:
+pass:
+name:

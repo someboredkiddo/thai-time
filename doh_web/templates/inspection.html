@@ -1,0 +1,33 @@
+{% for inspection in inspection_results %}
+  <div class="container-fluid
+    {% if inspection['grade'] == "A" %}bg-success
+    {% elif inspection['grade'] == "B" %}bg-warning
+    {% elif inspection['grade'] == "C" %}bg-danger
+    {% else %}bg-info{% end %}
+  ">
+    <h5>{{ inspection['inspection_date'] }}</h4>
+  </div>
+  <ul>
+    <li>Grade: {{ inspection['grade'] }}</li>
+    <li>Score: {{ inspection['score'] }}</li>
+    <li>Action: {{ inspection['action'] }}</li>
+  </ul>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Code</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for violations in inspection['violations'] %}
+      <tr>
+        <td>{{ violations['critical_flag'] }}</td>
+        <td>{{ violations['violation_code'] }}</td>
+        <td>{{ violations['violation_description'] }}</td>
+      </tr>
+    {% end %}
+    </tbody>
+  </table>
+{% end %}

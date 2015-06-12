@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <title>Totally Thai Time</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div id="site_body">
+      <div id="site_content" class="container">
+        <div class="site_content_header row">
+          <div class="col-sm-12">
+            <h2><a href="/">Totally Thai Time</a></h2>
+          </div>
+        </div>
+
+        <div class="site_content_section row">
+          <div class="row">
+            <div class="col-sm-5">
+              <form class="form-horizontal" method="get" action="/">
+                <div class="form-group">
+                  <label for="GradeFilter" class="col-sm-5 control-label">Grade</label>
+                  <div class="col-sm-7">
+                    <select class="form-control" id="GradeFilter" name="GradeFilter" multiple>
+                        <option value="A" {% if "A" in grade_filter %}selected{% end %}>A</option>
+                        <option value="B" {% if "B" in grade_filter %}selected{% end %}>B</option>
+                        <option value="C" {% if "C" in grade_filter %}selected{% end %}>C</option>
+                        <option value="Not Yet Graded" {% if "Not Yet Graded" in grade_filter %}selected{% end %}>Not Yet Graded</option>
+                        <option value="Pending" {% if "Pending" in grade_filter %}selected{% end %}>Pending</option>
+                        <option value="Unknown" {% if "Unknown" in grade_filter %}selected{% end %}>Unknown</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="Rank" class="col-sm-5 control-label">Order Results By</label>
+                  <div class="col-sm-7">
+                    <select class="form-control" id="Rank" name="Rank">
+                        <option value="name" {% if order_request == "name" %}selected{% end %}>Restaurant Name</option>
+                        <option value="current_grade" {% if order_request == "current_grade" %}selected{% end %}>Current Grade</option>
+                        <option value="current_score" {% if order_request == "current_score" %}selected{% end %}>Current Score</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-5 col-sm-7">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-sm-3">
+              <div class="panel panel-default">
+                <div class="panel-heading"><strong>Grades, What do they mean?</strong></div>
+                <div class="panel-body">
+                  <ul>
+                    <li class="text-success"><strong>A: 0 - 13 points</strong></li>
+                    <li class="text-warning"><strong>B: 14 - 27 points</strong></li>
+                    <li class="text-danger"><strong>C: 28 or more points</strong></li>
+                  </ul>
+                  <!-- <a href="http://www.nyc.gov/html/doh/downloads/pdf/rii/restaurant-grading-faq.pdf" target="_blank">See DOH website for more info</a> -->
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              {% if grade_filter == "C" %}
+              <img src='{{static_url("pad-thai-C.jpg")}}'/>
+              {% elif grade_filter == "B" %}
+              <img src='{{static_url("pad-thai-B.jpg")}}'/>
+              {% else %}
+              <img src='{{static_url("pad-thai-A.jpg")}}'/>
+              {% end%}
+          </div>
+        </div>
+
+        <div class="site_content_section row">
+          <div class="col-sm-12 .pre-scrollable" id="log">
+            <!-- Restaurant Table -->
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Restaurant</th>
+                  <th>Address</th>
+                  <th>Boro</th>
+                  <th>Phone</th>
+                  <th data-sortable="true">Current Grade</th>
+                  <th data-sortable="true">Current Score</th>
+                  <!-- <th>Last Inspection Date</th>
+                  <th>Number of Inspections</th> -->
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="restaurant-rows">
+              {% for restaurant in restaurant_results %}
+                  <!-- r.dba, r.building, r.street, r.zipcode, i.score, i.grade -->
+                  <tr>
+                    <td>{{ restaurant['n'] }}</td>
+                    <td>{{ restaurant['dba'] }}</td>
+                    <td><a href="http://maps.google.com/?q={{ url_escape(restaurant['address']) }}" target="_blank">{{ restaurant['address'] }}</a></td>
+                    <td>{{ restaurant['boro'] }}</td>
+                    <td>{{ restaurant['phone'] }}</td>
+                    <td>{{ restaurant['grade'] }}</td>
+                    <td>{{ restaurant['score'] }}</td>
+                    <td>
+                        <a href="inspection?camis={{ restaurant['camis'] }}" type="button" class="btn btn-primary btn-sm modal-link" data-toggle="modal" data-target="#myModal">
+                            View Inspections
+                        </a>
+                    </td>
+                  </tr>
+              {% end %}
+              </tbody>
+            </table>
+
+            <!-- Inspection Score Modal -->
+
+
+            <!-- Modal -->
+            <div id="modal" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Inspections</h4>
+                  </div>
+                  <div class="modal-body">
+                  <!-- Content Goes Here -->
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End Inspection Score Modal -->
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <footer id="site_footer">
+      <div class="logo"></div>
+    </footer>
+      <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+      <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        $('.modal-link').click(function(e) {
+            var modal = $('#modal'), modalBody = $('#modal .modal-body');
+            modalBody.load(e.currentTarget.href);
+            modal.modal();
+
+            return false;
+        });
+      });
+      </script>
+  </body>
+</html>
